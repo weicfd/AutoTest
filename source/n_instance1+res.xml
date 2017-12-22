@@ -1,0 +1,81 @@
+<!-- User -->
+<resources id="User_Service" name="UserService" base="./user" premise="">
+    <add>
+        <resource id="User_New" name="createByPhone" path="createByPhone">
+            <request>
+                <param name="name" attribute="UserCreateParam.name" type="String" required="true">
+                    <restriction>
+                        <pattern>"^[a-zA-Z0-9_]{3,16}$"</pattern>
+                    </restriction>
+                </param>
+                <param name="gender" attribute="UserCreateParam.gender" type="???Gender" required="flase"/>
+                <param name="phone" attribute="UserCreateParam.phone" type="String"> 
+                    <restriction>
+                        <pattern>"^1[3|4|5|7|8][0-9]{9}$"</pattern>
+                    </restriction>
+                </param>
+                <param name="email" attribute="UserCreateParam.email" type="String" required="flase"/>
+                <param name="birthday" attribute="UserCreateParam.birthday" type="Date" required="flase" />
+                <param name="portrait" attribute="UserCreateParam.portrait" type="String" required="flase"/>
+                <param name="status" attribute="UserCreateParam.status" type="?UserStatus" required="flase"/>
+                <param name="creationDate" attribute="UserCreateParam.creationDate" type="Date" required="flase"/>
+                <param name="updateDate" attribute="UserCreateParam.updateDate" type="Date" required="flase"/>
+                <param name="password" attribute="UserCreateParam.password" type="String" required="true">
+                    <restriction>
+                        <pattern>"^[a-zA-Z]\w{5,17}$"</pattern>
+                    </restriction>
+                </param>
+                <param name="toActive" attribute="UserCreateParam.toActive" type="boolean" required="flase"/>
+                <param name="flag" attribute="UserCreateParam.flag" type="long" required="flase"/>
+            </request>
+            <response>
+            	<param attribute="UserBasicResultData.user" type="User" />
+            </response>
+        </resource>
+    </add>
+    <update>
+    	<resource id="Password_Update" name="updatePassword" path="updatePassword">
+    		<request>
+    			<param name="userId" attribute="UserPasswordUpdateParam.userId" type="Long" required="true"/>
+    			<param name="password" attribute="UserPasswordUpdateParam.password" type="String">
+                    <restriction>
+                        <pattern>"^[a-zA-Z]\w{5,17}$"</pattern>
+                    </restriction>
+                </param>
+    		</request>
+    		<response>
+    			<param attribute="???rst" type="JsonDataResult" />
+    		</response>
+    	</resource>
+    </update>
+    <update>
+        <resource id="Email_Update" name="bindEmail" path="bindEmail">
+            <request>
+                <param name="userId" attribute="ServiceParam.userId" type="Long" required="true"></param>
+                <param name="email" attribute="ServiceParam.email" type="String" required="true"></param>
+            </request>
+            <response>
+                <param attribute="?rst" type="JsonDataResult" />
+            </response>
+        </resource>
+    <delete>
+    	<resource id="User_Delete" name="delete" path="delete">
+    		<request>
+    			<param name="id" attribute="IDParam.id" type="long" required="true"/>
+    		</request>
+    		<response>
+    			<param attribute="?rst" type="JsonDataResult" />
+    		</response>
+    	</resource>
+    </delete>
+    <find>
+    	<resource id="User_Find_Email" name="selectByEmail" path="selectByEmail">
+    		<request>
+    			<param name="email" type="StringParam"  required="true"/>
+    		</request>
+    		<response>
+    			<param attribute="UserBasicResultData.user" type="User"/>
+    		</response>
+    	</resource>
+    </find>
+</resources>
