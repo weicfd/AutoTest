@@ -9,6 +9,14 @@ import java.io.File;
  */
 public class InputParser {
     public void parseInput(File script) {
+        // 获取sequence
 
+        // 获取对应数据
+
+        // 发送请求获取回应
+
+        // 解析回应
+
+        // 保存结果到文件
     }
 }

@@ -6,6 +6,8 @@ package reporter;
  */
 public class TestingReporter {
     public void report() {
+        // 比对预期结果和实际回应值
 
+        // 生成测试报告
     }
 }

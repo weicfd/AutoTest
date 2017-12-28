@@ -47,10 +47,20 @@ public class ProjectDriver {
 
         try {
             File scripts = new File(config.SysConfig.SCRIPT_PATH);
-            for (File script :
+            for (File service_dir :
                     scripts.listFiles()) {
-                generator.generateInput(script); // 生成器将原脚本加工成完整的脚本文件
-                parser.parseInput(script); // 在script解析时再载入测试数据
+                if (service_dir != null) {
+                    for (File index_dir:
+                         service_dir.listFiles()) {
+                        if (index_dir != null) {
+                            for (File script :
+                                    index_dir.listFiles()) {
+                                generator.generateInput(script); // 生成器将原脚本加工成完整的脚本文件
+                                parser.parseInput(script); // 在script解析时再载入测试数据
+                            }
+                        }
+                    }
+                }
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
