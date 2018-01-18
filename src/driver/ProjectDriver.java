@@ -1,13 +1,15 @@
 package driver;
 
 import analyzer.BugAnalyzer;
-import generator.InputGenerator;
+import parser.InputGenerator;
 import parser.InputParser;
 import reporter.TestingReporter;
 import utils.HttpRequsetUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * 项目驱动器
@@ -50,12 +52,25 @@ public class ProjectDriver {
             for (File service_dir :
                     scripts.listFiles()) {
                 if (service_dir != null) {
-                    for (File index_dir:
-                         service_dir.listFiles()) {
-                        if (index_dir != null) {
+                    File[] sequence = service_dir.listFiles();
+
+                    // sequence按照操作数量从少至多来遍历
+                    Arrays.sort(sequence, new Comparator<File>() {
+                        @Override
+                        public int compare(File o1, File o2) {
+                            if (o1.isDirectory() && o2.isDirectory()) {
+                                return Integer.parseInt(o2.getName()) - Integer.parseInt(o1.getName());
+                            }
+                            return 0;
+                        }
+                    });
+
+                    for (int i = 0; i < sequence.length; i++) {
+                        if (sequence[i] != null) {
                             for (File script :
-                                    index_dir.listFiles()) {
-                                generator.generateInput(script); // 生成器将原脚本加工成完整的脚本文件
+                                    sequence[i].listFiles()) {
+//                                generator.generateInput(script); // 生成器将原脚本加工成完整的脚本文件
+                                // 改: 合并加工和解析, 数据存储的时间 -> 变成文件读写的时间 了呢, 这不是以时间换空间吗
                                 parser.parseInput(script); // 在script解析时再载入测试数据
                             }
                         }

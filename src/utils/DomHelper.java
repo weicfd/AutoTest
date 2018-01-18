@@ -53,4 +53,8 @@ public class DomHelper {
     public String getAttr(String attr) {
         return root.getAttribute(attr);
     }
+
+    public String randomPick() {
+        return null;
+    }
 }
