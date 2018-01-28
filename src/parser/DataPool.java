@@ -69,15 +69,6 @@ public class DataPool {
         operationPool.add(op);
     }
 
-    public void modify(Operation op) {
-    }
-
-    public void delete(Operation op) {
-    }
-
-    public void find(Operation op) {
-    }
-
     // -----------data-----------
     public void addData(String attr, List<String> values) {
         if (valPool.containsKey(attr)) {
@@ -96,6 +87,9 @@ public class DataPool {
         return vals.get(cur);
     }
 
+    public int countDataNo(String attr) {
+        return valPool.get(attr) == null ? 0 : valPool.get(attr).size();
+    }
 //    class DataNode {
 //        String val;
 //        Set<DataNode> childs;

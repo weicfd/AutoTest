@@ -1,8 +1,6 @@
 package utils.entity;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,6 +29,10 @@ public class Operation {
         return locator;
     }
 
+    public String getPath() {
+        return path;
+    }
+
     public String getName() {
         return name;
     }
@@ -41,5 +43,10 @@ public class Operation {
 
     public void addAttr(String attr) {
         attrSet.add(attr);
+    }
+
+    public void setLocator(String locator) {
+        if (this.locator != null && !this.locator.equals(locator)) System.err.println(this.name + "操作有2+个locator");
+        else this.locator = locator;
     }
 }

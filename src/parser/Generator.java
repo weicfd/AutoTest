@@ -31,16 +31,19 @@ public class Generator {
 
         for (Iterator<Element> it = service.elementIterator(); it.hasNext();) {
             Element opElement = it.next();
+            String opType = opElement.getName();
             // 获取操作的基本信息,构造
             Element resElement = opElement.element("resource");
-            Operation op = new Operation(opElement.getName(), resElement.valueOf("@name"), resElement.valueOf("@path"));
+            Operation op = new Operation(opType, resElement.valueOf("@name"), String.format("%s/%s", service.valueOf("@base"), resElement.valueOf("@path")));
 
             List<Element> params = resElement.element("request").element("param").elements();
+            String locator;
             for (Element param:
                     params) {
 //                List<Element> subParam = param.elements("element");
                 // TODO: 18/1/19 多层次的参数
                 op.addAttr(param.valueOf("@attribute"));
+                if (param.valueOf("@location").equals("true")) op.setLocator(param.valueOf("@attribute"));
             }
             dataPool.add(op);
         }

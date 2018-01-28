@@ -1,8 +1,10 @@
 package driver;
 
 import analyzer.BugAnalyzer;
-import parser.InputGenerator;
-import parser.InputParser;
+import org.dom4j.DocumentException;
+import parser.DataPool;
+import parser.Generator;
+import parser.Parser;
 import reporter.TestingReporter;
 import utils.HttpRequsetUtil;
 
@@ -34,7 +36,7 @@ public class ProjectDriver {
      * 启动项目的驱动
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DocumentException {
         // search for the running server
 
 //        System.out.println("输入当前运行系统的服务器根路径");
@@ -44,8 +46,11 @@ public class ProjectDriver {
         String server = "http://localhost:8080/"; // 或许可以从已载入的配置文件中获取?
 
         // generator input script and data
-        InputGenerator generator = new InputGenerator();
-        InputParser parser = new InputParser();
+        DataPool dataPool = DataPool.getInstance();
+        Generator generator = new Generator();
+        Parser parser = new Parser();
+
+        generator.parseData();
 
         try {
             File scripts = new File(config.SysConfig.SCRIPT_PATH);
@@ -71,7 +76,11 @@ public class ProjectDriver {
                                     sequence[i].listFiles()) {
 //                                generator.generateInput(script); // 生成器将原脚本加工成完整的脚本文件
                                 // 改: 合并加工和解析, 数据存储的时间 -> 变成文件读写的时间 了呢, 这不是以时间换空间吗
-                                parser.parseInput(script); // 在script解析时再载入测试数据
+                                dataPool.clearOperations();
+                                dataPool.clearObjects();
+                                generator.parseScript(script); // 在script解析时再载入测试数据
+                                parser.parseOperations();
+
                             }
                         }
                     }
