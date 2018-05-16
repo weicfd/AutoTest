@@ -6,6 +6,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import testng_version.Config;
 import testng_version.entity.Method;
+import testng_version.fsm.DataFsm;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,11 +19,17 @@ import java.util.Map;
 public class TemplateWriter {
     VelocityEngine ve;
     String root_dir = Config.generate_test_dir;
-    HashMap<Integer, String> data;
+    HashMap<Integer, String> dataMap;
+    DataFsm dataFsm;
+    List<Method> methods;
 
 
     public TemplateWriter(int fileID, List<Method> methods, String serviceName, boolean sucOrFail, String pat, HashMap<Integer, String> dataMap) {
-        data = dataMap;
+        this.dataMap = dataMap;
+        dataFsm = DataFsm.getDataFsm();
+        dataFsm.init(methods);
+        this.methods = methods;
+
         ve = new VelocityEngine();
         ve.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, Config.template_file_path);
         //处理中文问题
@@ -54,9 +61,13 @@ public class TemplateWriter {
             for (int i = 0; i < len; i++) {
                 Method m = methods.get(i);
                 methodList[i] = m.getMethodName();
-                paramList[i] = convertToUrl(m.getDataCodeMap());
+                paramList[i] = getData(m.getDataCodeMap(), m.getmType());
                 targetList[i] = merge(m.getTargets());
+                dataFsm.next();
             }
+            root.put("methodList", methodList);
+            root.put("paramList", paramList);
+            root.put("targetList", targetList);
 
             // oracle compute
 
@@ -86,18 +97,18 @@ public class TemplateWriter {
         return builder.toString();
     }
 
-    private String convertToUrl(Map<String, String> dataCodeSet) {
+    private String getData(Map<Integer, String> dataCodeSet, int mType) {
         StringBuilder urlBuilder = new StringBuilder();
         String con = "";
         if (!dataCodeSet.isEmpty()) {
-            for (String code :
+            for (Integer code :
                     dataCodeSet.keySet()) {
                 urlBuilder.append(con);
                 con = "&";
                 urlBuilder.append(dataCodeSet.get(code));
                 urlBuilder.append('=');
-                // TODO: 18/5/11 data generate fsm (design a new module)
-                urlBuilder.append(data.get(Integer.valueOf(code)));
+                // TODO: 18/5/11 dataMap generate fsm (design a new module)
+                urlBuilder.append(dataMap.get(dataFsm.getData(code)));
             }
         }
         return urlBuilder.toString();

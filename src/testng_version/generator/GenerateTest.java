@@ -21,9 +21,9 @@ public class GenerateTest {
     private static int testFileID = 0;
 
     public GenerateTest() {
-        // parse data
-        dataParser = new DataParser(data_xml_dir);
-        dataMap = dataParser.getData(); // for the update method to modify this step
+        // parse dataMap
+        dataParser = new DataParser();
+        dataMap = dataParser.getDataCode(); // for the update method to modify this step
         // parse service
         File service_dir = new File(service_xml_dir);
         String[] service_paths = service_dir.list();
@@ -38,19 +38,19 @@ public class GenerateTest {
     }
 
     public static void main(String[] args) {
-        System.out.println("Step 1: initialize the data, services and pattern");
+        System.out.println("Step 1: initialize the dataMap, services and pattern");
         GenerateTest generateTest = new GenerateTest();
 
         System.out.println("Step 2: for each pattern, generate several testNG class files as one test");
         // sort the patterns first
         Collections.sort(generateTest.patterns);
 
+        System.out.println("Step 3: Pattern - Methods Mapping");
         // group by service
         for (Service s :
                 generateTest.services) {
             for (String pat :
                     generateTest.patterns) {
-                System.out.println("Step 3: Pattern - Methods Mapping");
                 List<Method> testPath = new ArrayList<>();
                 generateTest.testPathDFS(0, testPath, pat, s);
             }
@@ -77,6 +77,7 @@ public class GenerateTest {
         File targetDir = new File(targetPath);
         if (!targetDir.exists()) targetDir.mkdirs();
 
+        System.out.println("Step 4: scan the target method with locator param");
         TemplateWriter writer1 = new TemplateWriter(testFileID++, testPath, service_name, true, pat, dataMap);
         TemplateWriter writer2 = new TemplateWriter(testFileID++, testPath, service_name, false, pat, dataMap);
     }
